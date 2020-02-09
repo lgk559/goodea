@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div class="message"></div>
+  
+  <label for="useName">姓名</label>
+  <input type="text" id="useName">
+  <label for="useId">帳號</label>
+  <input type="text" id="useId">
+
+<button class="sent">送出</button>
+
+<P class="show"></P>
+
+  <!-- <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase-app.js"></script> -->
+  <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-analytics.js"></script>
+    
+    
+
+  <script>
+      var firebaseConfig = {
+        apiKey: "AIzaSyAIB3NdSswYMxpUtrP7TQkJKJWun3D2gYg",
+        authDomain: "test-87ccd.firebaseapp.com",
+        databaseURL: "https://test-87ccd.firebaseio.com",
+        projectId: "test-87ccd",
+        storageBucket: "test-87ccd.appspot.com",
+        messagingSenderId: "316945080248",
+        appId: "1:316945080248:web:60e07c403d3d9ff539b94d",
+        measurementId: "G-M03LPRP98G"
+      };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  
+  </script>
+
+  <script>
+  var database = firebase.database();
+    document.querySelector(".sent").addEventListener("click",pushDate,false)
+      
+    // function pushDate() {
+    //   var name = document.querySelector("#useName").value 
+    //   var userId = document.querySelector("#useId").value 
+    //   console.log(name,userId)
+    //     firebase.database().ref('users/' + userId).set({
+    //       "username": name
+    //   });
+    // }
+
+
+
+function pushDate() {
+  //上傳測試1：單純字串
+  let str = "單單純字串3"
+
+  //一個json格式
+  let obj = [
+    {
+      "name" : "王小明",
+      "age" : 15,
+      "hobby": ["跑步","唱歌"]
+    },
+    {
+      "name" : "陳大華",
+      "age" : 18,
+      "hobby": ["跳舞","唱歌"]
+    }, 
+    {
+      "name" : "黃阿真",
+      "age" : 18,
+      "hobby": ["打game","漫畫"]
+    }
+  ]
+
+  
+  database.ref("names1/").set(obj)  //使用set
+  // database.ref("/names2").set(obj)  //使用set
+  // database.ref("names3/names3").set(obj)  //使用set
+  // database.ref("names4").set({"names44": obj})  //使用set
+  // database.ref("sava/").push(obj)  //使用push  //database.ref('/參數').push(數值);
+  // database.ref('users/').set(str)
+
+  p_onceShow()
+
+}
+
+//讀取-當按下按鈕時才會抓資料並顯示 
+function p_onceShow(){
+  var data = ""
+// console.log()
+// let name1 = database.ref("names1")
+
+  database.ref("names1/0/name").once('value', function (list) {  //即時顯示
+    console.log(list.val()); //
+    list.forEach(function (item){
+      console.log(item.val().hobby)
+
+      data += item.val().hobby + "/";
+    })
+    // console.log(data);
+});
+document.querySelector(".show").textContent = data
+
+}
+
+
+
+
+function storedata(){
+//   db.collection("movies").doc("新世紀福爾摩斯").set({
+//     name:"新世紀福爾摩斯",
+//     date:"2010",
+//     desctiption: "本劇改編於…"
+//   })
+}
+  </script>
+  <!-- <script src="JS/database.js"></script> -->
+
+</body>
+</html>

@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>雲端硬碟</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/all.css">
+  <!-- -->
+
+  <style>
+    .container-fluid {
+      min-width: 800px;
+    }
+
+    .toolbar {
+      margin-top: -15px;
+    }
+
+    .display {
+      display: none
+    }
+
+    .onActice {
+      background-color: #3399ff;
+      color: #fff;
+    }
+
+    .drop-container {
+      /* width: 600px;*/
+      height: 100px;
+      border: 2px dashed #000;
+      padding-top: 25px;
+      text-align: center;
+    }
+
+    .progress {
+      -webkit-appearance: none;
+      appearance: none;
+      text-align: center;
+      width: 100%;
+      padding: 0;
+    }
+
+    .starColor {
+      color: #007bff;
+    }
+
+    @media (min-width: 800px) {
+      .toolbar {
+        margin-top: -20px;
+      }
+    }
+
+    @media (min-width: 1320px) {
+      .toolbar {
+        margin-top: 0px;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+
+  <div class="container-fluid" id="app">
+    <div class="row mt-3">
+      <div class="col-12">
+        <h3>我的雲端硬碟</h3>
+      </div>
+    </div>
+    <!-- 以下左功能，右主內容 -->
+    <div class="row mt-3">
+      <div class="col-md-2 col-2 p-1">
+        <ul class="list-group">
+          <li class="list-group-item" @click="isFilesActice = !isFilesActice" :class="{'onActice': isFilesActice}"
+            data-toggle="modal" data-target="#AddFiles">新增+</li>
+          <li class="list-group-item" @click="isAllFile = !isAllFile, isNewFile=false,isStarFile=false"
+            :class="{active: isAllFile}">我的硬碟</li>
+          <li class="list-group-item" @click="isAllFile = false, isNewFile=!isNewFile,isStarFile=false"
+            :class="{active: isNewFile}">近期存取</li>
+          <li class="list-group-item" @click="isAllFile = false, isNewFile=false,isStarFile=!isStarFile"
+            :class="{active: isStarFile}">已加星號</li>
+          <!-- <li class="list-group-item">垃圾桶</li> -->
+          <li class="list-group-item" data-toggle="collapse" href="#capacity" aria-expanded="false"
+            aria-controls="capacity">儲存空間</li>
+          <div class="collapse" id="capacity">
+            <div class="card card-body">
+              <div>已用空間：{{capacity_mb}} mb</div>
+              <div>剩餘空間：{{useCapacity_mb}} mb</div>
+              <div>總共：20mb</div>
+            </div>
+          </div>
+        </ul>
+      </div>
+      <!-- 以上是左功能，以下是主內容 -->
+      <div class="col-md-10 col-10">
+        <div class="row">
+          <div class="col-9">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb" id="breadcrumb">
+                <li class="breadcrumb-item" @click='reto(item,key)' id='rool' v-for="(item,key) in breadcrumbARR">
+                  {{item}}</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+        <!-- 以下為檔案列表--標題 -->
+        <div class="row listH">
+          <div class="col-6">名稱</div>
+          <div class="col-2"></div>
+          <div class="col-2">上次修改</div>
+          <div class="col-2">檔案大小</div>
+        </div>
+
+        <div v-if="isNewFile">
+          <!-- 近期新增 -->
+          <div class="row" v-for="(item,key) in in20item">
+            <span class="col-4  pl-5" @click="openFileShow(item)" data-toggle="modal" data-target="#openFileShow">
+              <i class="fas fa-file mr-3"></i>
+              <span class="form-check-label">{{item.name}}</span>
+            </span>
+            <span class="col-4">
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <!-- <button class="btn"><i class="fas fa-download"></i></button class="btn btn-secondary"> -->
+                <!-- <button class="btn"><i class="fas fa-link"></i></button> -->
+                <button class="btn" @click="TOstar_In20(item,key)"><i class="far fa-star"
+                    :class="{starColor:item.star}"></i></button>
+                <button class="btn"><i class="fas fa-trash-alt"></i></button>
+              </div>
+            </span>
+            <span class="col-2">{{item.date}}</span>
+            <span class="col-2">{{item.size}}</span>
+          </div>
+        </div>
+        <div v-if="isStarFile">
+          <!-- 有加星號 -->
+          <div class="row" v-for="(item,key) in inStarItem">
+            <span class="col-4  pl-5" @click="openFileShow(item)" data-toggle="modal" data-target="#openFileShow">
+              <i class="fas fa-file mr-3"></i>
+              <span class="form-check-label">{{item.name}}</span>
+            </span>
+            <span class="col-4">
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <!-- <button class="btn"><i class="fas fa-download"></i></button class="btn btn-secondary"> -->
+                <!-- <button class="btn"><i class="fas fa-link"></i></button> -->
+                <button class="btn" @click="TOstar_Star(item,key)"><i class="far fa-star"
+                    :class="{starColor:item.star}"></i></button>
+                <button class="btn"><i class="fas fa-trash-alt"></i></button>
+              </div>
+            </span>
+            <span class="col-2">{{item.date}}</span>
+            <span class="col-2">{{item.size}}</span>
+          </div>
+        </div>
+        <!-- 新增區(預設隱藏)、檔案列表--內容 -->
+        <div v-if="isAllFile">
+
+          <!-- 以下為檔案列表 -->
+
+          <div class="row" v-for="(item,key) in folder" v-if="folder.length">
+            <span class="col-4  pl-5" @click="goto(item.name,key)">
+              <i class="far fa-folder mr-3"></i>{{item.name}}
+            </span>
+            <span class="col-4">
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <!-- <button class="btn text-white" disabled><i class="fas fa-download"></i></button> -->
+
+                <!-- <button class="btn"><i class="fas fa-link"></i></button> -->
+                <button class="btn text-white" @click="TOstarFolder_All(item,key)" disabled><i class="far fa-star"
+                    :class="{starColor:item.star}"></i></button>
+                <!-- <button class="btn"><i class="fas fa-trash-alt"></i></button> -->
+              </div>
+            </span>
+            <span class="col-2">{{item.date}}</span>
+            <span class="col-2">{{item.size}}</span>
+          </div>
+
+          <div class="row" v-for="(item,key) in file" v-if="file.length">
+            <span class="col-4  pl-5" @click="openFileShow(item)" data-toggle="modal" data-target="#openFileShow">
+              <i class="fas fa-file mr-3"></i>
+              <span class="form-check-label">{{item.name}}</span>
+            </span>
+            <span class="col-4">
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <!-- <button class="btn"><a class="fas fa-download" @click="download(item)" id="downloadBtn"
+                    download></a></button> -->
+
+                <!-- <hidd-component></hidd-component> -->
+                <button class="btn" @click="TOstarFile_All(item,key)"><i class="far fa-star"
+                    :class="{starColor:item.star}"></i></button>
+                <button class="btn" @click="delete_File(item,key)"><i class="fas fa-trash-alt"></i></button>
+              </div>
+            </span>
+
+            <span class="col-2">{{item.date}}</span>
+            <span class="col-2">{{item.size}}</span>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- 以上以下是主內容 -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="openFileShow" tabindex="-1" role="dialog" aria-labelledby="openFileShowTitle"
+      aria-hidden="true" aria-modal="false">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="openFileShowTitle">檔案預覽</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div>
+              <p>url連結：</p>
+              <span id="example">{{fileURL}}</span>
+              <button id="copy" data-clipboard-target="#example">複製連結</button>
+              <hr>
+              <p>檔案位子：<span class="pach"></span></p>
+            </div>
+            <p>如果要下載檔案，請右鍵另存新檔</p>
+            <iframe src='' frameborder='0' id="fileShow" class='img-fluid'></iframe>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="AddFiles" tabindex="-1" role="dialog" aria-labelledby="AddFilesTitle" aria-hidden="true"
+      aria-modal="false" @click="isFilesActice=false">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="AddFilesTitle">新增檔案</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" @click="isFilesActice=false.printItem(),add_filesCancleBtn()">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <!-- 以下為上傳檔案、資料夾 -->
+            <div class="col-12" :class="{'display': false}">
+              <div>
+                <span>儲存路徑：</span>
+                <select name="" id="selectRool" v-for="(item,key) in breadcrumbARR" @click='reto(item,key)'>
+                  <option class="" id='rool'>{{item}}</option>
+                </select>
+                <button class="btn btn-primary ml-3" v-if="isRef" @click="isRef=!isRef">新增資料夾</button>
+                <input type="text" v-if="!isRef" v-model='useRef'></input>
+                <button class="btn btn-warning ml-3" v-if="!isRef" @click="isRef=!isRef,getRef()">確定</button>
+
+
+              </div>
+              <div class="p-3 border mt-5" id="add_files_in">
+                <div class="row justify-content-center">
+                  <div class="col-6 ">
+                    <input type="file" id="add_filesr_inAddBtn" class="btn btn-outline-secondary" @change="upload_files"
+                      multiple="multiple"><!-- 上傳按鈕 -->
+                    <button id="add_files_inCancleBtn" class="btn btn-outline-secondary ml-3 mr-2"
+                      @click="isFilesActice=false,printItem(),add_filesCancleBtn()" data-dismiss="modal"
+                      aria-label="Close">取消</button>
+                  </div>
+                  <div class="col-11 mt-3">
+                    <div class="row">
+                      <div class="col-auto" id="fileMessage">{{fileMessage}}</div>
+                      <div class="col-9 progress ml-3 mt-2">
+                        <div class="progress-bar" id="progress" role="progressbar" style="width: 0%;" aria-valuenow="0"
+                          aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 以上為上傳檔案、資料夾 -->
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js"></script> <!-- //必要 -->
+  <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-analytics.js"></script> <!-- //分析使用者體驗 -->
+
+  <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-auth.js"></script> <!-- //認證身份 -->
+
+  <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-database.js"></script> <!-- //第二種資料庫 (必要．但二擇一) -->
+  <script src=" https://www.gstatic.com/firebasejs/7.6.2/firebase-storage.js"> </script>
+  <script src="https://kit.fontawesome.com/957bf74550.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script> <!-- 複製文字到剪貼簿 -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>new Clipboard("#copy");</script><!-- 複製文字到剪貼簿_程式碼 -->
+
+
+  <script>
+    const vm = new Vue({
+      el: "#app",
+      data: {
+        ref: "/DriveTest/MyDrive/",
+        ref2: '',
+        useRef: '',//連接input。使用者所輸入的新資料夾名
+        addFolder: '',
+        fileName: '',
+        folderName: '',//點擊的檔案名稱 (資料夾或檔案)
+        child: "",
+        folder: [],  //類型為資料夾的檔案
+        file: [], //類型為檔案的檔案
+        fileDetail: [], //檔案詳細資料
+        fileURL: '',
+        select: [], //使用者所勾選檔案，要作批次處理會用到
+        star: [],//使用者有加星號的資料
+        allItem: [],
+        in20item: [], //最近修改、新增的20筆
+        inStarItem: [], //有加入星號的資料
+        breadcrumbARR: ['MyDrive'],//麵包屑清單
+        add_folder_Name: '',//新增資料夾，夾名
+        // 'isAddFolder': true, //新增資料夾，輸入夾名_容器顯示開關
+        // 'isFolderActice': false, //
+        // 'isdisabled': true, //新增資料夾，輸入夾名_確定的按鈕__失效HTML屬性
+        // 'isAddFiles': true, 
+        'fileMessage': '上傳提示',
+        'isRef': true, //隱藏編輯路徑
+        'isRefText': '編輯路徑',
+        //頁面顯示
+        'isFilesActice': false,
+        'isAllFile': true, //顯示近期修改
+        'isNewFile': false, //顯示近期修改
+        'isStarFile': false, //顯示近期修改
+        firebaseConfig: {
+          apiKey: "AIzaSyAIB3NdSswYMxpUtrP7TQkJKJWun3D2gYg",
+          authDomain: "test-87ccd.firebaseapp.com",
+          databaseURL: "https://test-87ccd.firebaseio.com",
+          projectId: "test-87ccd",
+          storageBucket: "test-87ccd.appspot.com",
+          messagingSenderId: "316945080248",
+          appId: "1:316945080248:web:60e07c403d3d9ff539b94d",
+          measurementId: "G-M03LPRP98G"
+        },
+        capacity: 0,//已用
+        useCapacity: 0,//剩餘容量
+        capacity_mb: 0,//已用
+        useCapacity_mb: 20//剩餘容量
+
+      },
+      methods: {
+
+        printItem: function () {
+          let vm = this
+          this.folder = []
+          this.file = []
+          // this.ref2 = ''
+          if (vm.folderName !== "") { 
+              if (vm.folderName.charAt(vm.folderName.length - 1) !== "/") {
+                vm.folderName = vm.folderName + "/" 
+              }
+              else{}
+              }
+          else { vm.folderName = 'MyDrive/' }
+          const storRef = firebase.storage().ref(vm.ref + vm.ref2)
+
+          firebase.database().ref("/DriveTest/MyDrive/capacity/").once('value', function (list) {
+
+            if (list.val()) {
+              vm.capacity = list.val().capacity
+              vm.useCapacity = list.val().useCapacity
+              vm.capacity_mb = list.val().capacity_mb
+              vm.useCapacity_mb = list.val().useCapacity_mb
+            }
+          })
+          let allItemRef = 'DriveTest/MyDrive/allItem/MyDrive/' + vm.folderName;
+          firebase.database().ref(allItemRef).once('value', function (list) {
+            console.log(Object.prototype.toString.call(list.val()))
+            if (Object.prototype.toString.call(list.val()) == '[object Array]') {
+              console.log("是陣列")
+              vm.file = list.val()
+            } else {
+              console.log("不是陣列")
+              vm.file = [];
+            }
+          });
+
+          firebase.database().ref("/DriveTest/MyDrive/in20item/").once('value', function (list) {
+            if (list.val() == null) {
+              vm.in20item = []
+            }
+            else {
+              if (list.val().length == 1) {
+                vm.in20item.push(list.val())
+              }
+              vm.in20item = (list.val()).reverse()
+            }
+          });
+          firebase.database().ref("/DriveTest/MyDrive/inStarItem/").once('value', function (list) {
+            if (list.val() == null) {
+              vm.inStarItem = []
+            }
+            else {
+              if (list.val().length == 1) {
+                vm.inStarItem.push(list.val())
+              }
+              vm.inStarItem = list.val()
+            }
+          });
+
+
+          storRef.listAll().then(ref => {
+            let folderAll = ref.prefixes  //全部資料夾
+            let fileAll = ref.items  //全部檔案
+
+            for (let i = 0; i < folderAll.length; i++) {
+              let folderObj = {}
+              folderObj.name = folderAll[i].name + "";
+              folderObj.size = "-";
+              folderObj.date = "-";
+              folderObj.star = false;
+              folderObj.pach = vm.ref;
+              folderObj.id = Date.parse(new Date()) / 1000
+              vm.folder.push(folderObj)
+            }
+          })
+        },
+        goto: function (name, key) {
+          this.isNewFile = false;
+          this.isAllFile = true;
+          this.isNewFile = false;
+          this.isStarFile = false;
+
+          if (name !== "") {
+            this.folderName = name
+            this.ref2 += this.folderName + "/";
+            this.printItem()
+            this.breadcrumbARR.push(this.folderName)
+          }
+          else { return }
+
+        },
+        reto: function (name, key) {
+          this.addFolder = ''
+          this.isNewFile = false;
+          this.isAllFile = true;
+          this.isNewFile = false;
+          this.isStarFile = false;
+          let vm = this
+          this.folderName = name
+          this.folder = []
+          this.file = []
+          let br = ["MyDrive"]
+          this.ref2 = '';
+          vm.breadcrumbARR.splice((key), (vm.breadcrumbARR.length - key), name)
+          this.ref = "/DriveTest/MyDrive/"
+          for (let i = 1; i <= key; i++) {
+            vm.ref2 += vm.breadcrumbARR[i] + "/";
+            br.push(vm.breadcrumbARR[i])
+          }
+          this.breadcrumbARR = br
+          console.log(vm.breadcrumbARR)
+          this.printItem()
+        },
+
+        openFileShow: function (item) {
+          this.fileName = item.name
+          let str = item.pach
+          let strA = str.slice(35, str.length)
+          if (strA == '') {
+            strA = '/DriveTest/MyDrive/'
+          }
+          else {
+            strA = '/DriveTest/MyDrive/' + strA
+          }
+          const storRef = firebase.storage().ref(strA + item.name)
+          console.log(strA + item.name)
+          let vm = this
+          document.querySelector("#fileShow").removeAttribute("src");
+          storRef.getDownloadURL().then(function (url) {
+            console.log(url);
+            document.querySelector("#fileShow").setAttribute("src", url);
+            vm.fileURL = url
+          })
+        },
+        delete_File: function (item, key) {
+          let vm = this
+          this.fileName = item.name
+          console.log(item.size)
+          let str = item.id
+          let childRef
+          if (this.ref2 !== "") {
+            childRef = this.ref2 + "/" + this.fileName
+          }
+          else {
+            childRef = this.fileName
+            vm.folderName = 'MyDrive'
+          }
+          const storRef = firebase.storage().ref(this.ref).child(childRef);
+
+          vm.file.splice(key, 1)
+          if (vm.fileName == '') { vm.ref2 = 'MyDrive' };
+
+          firebase.database().ref('/DriveTest/MyDrive/allItem/MyDrive/' + vm.folderName ).set(vm.file)
+          let in20item_key = vm.in20item.findIndex(function (item) { return item.id == str })
+          let inStarItem_key = vm.inStarItem.findIndex(function (item) { return item.id == str })
+          console.log(in20item_key, inStarItem_key)
+          if (in20item_key !== -1) { vm.in20item.splice(in20item_key, 1) }
+          if (inStarItem_key !== -1) { vm.inStarItem.splice(inStarItem_key, 1) }
+          firebase.database().ref("/DriveTest/MyDrive/in20item/").set(vm.in20item)
+          firebase.database().ref("/DriveTest/MyDrive/inStarItem/").set(vm.inStarItem)
+
+          storRef.delete().then(() => {
+            console.log('刪除成功')
+            vm.capacity = vm.capacity - (item.size);
+            vm.useCapacity = 20480000 - vm.capacity;
+            vm.capacity_mb = Math.round((vm.capacity / 1024/1000)*100 )/100
+            vm.useCapacity_mb = Math.round(((20480000 - vm.capacity) /1024/1000)*100 )/100
+            let capacity = {
+              'capacity': vm.capacity,
+              'useCapacity': vm.useCapacity,
+              'capacity_mb': vm.capacity_mb,
+              'useCapacity_mb': vm.useCapacity_mb
+            }
+
+            firebase.database().ref("/DriveTest/MyDrive/capacity/").set(capacity)
+          }).catch(function (error) {
+            // msg.textContent = "刪除失敗";
+            console.log('刪除失敗')
+          })
+        },
+
+        getRef: function () {//新增檔案所新增的資料夾。
+          let str = this.useRef
+          let vm = this
+          // console.log(str.charAt(str.length - 1))
+          if (str == "") { return }
+          else {
+            vm.breadcrumbARR.push(str);
+            if (str.charAt(str.length - 1) !== "/") {
+              vm.ref2 += vm.useRef + "/"
+              vm.addFolder = vm.useRef 
+              vm.useRef = '';
+            } else {
+              vm.ref2 += vm.useRef
+              vm.addFolder = vm.useRef
+              
+              vm.useRef = '';
+            }
+          }
+        },
+        upload_files: function (e) {
+
+          this.getRef()
+          percentage = 0
+          let storage = firebase.storage();
+          let UpFile = e.target.files
+          // this.file = []
+          let uploader = document.getElementById('progress')
+          let vm = this;
+          let Arr = []
+          let upfileSize
+          for (let i = 0; i < UpFile.length; i++) {
+            let fileSize = UpFile[i].size
+            upfileSize = 0
+            upfileSize = UpFile[i].size + vm.capacity
+            console.log(fileSize)
+            if (upfileSize > 20480000) {
+              vm.fileMessage = "雲端儲存空間不夠，請清除一些不常用檔案後再重新上傳"
+              return
+            }
+            if (fileSize > 10240000) {
+              vm.fileMessage = "檔案太大了. 上傳不可超過10mb"
+              return
+            } else {
+              console.log('檔案大小ok')
+              // console.log(UpFile.length) 
+              let storageRef = storage.ref(vm.ref).child(vm.ref2 + UpFile[i].name);
+              var newMetadata = {
+                customMetadata: {
+                  'id': Date.parse(new Date()) / 1000,
+                  // 'star' : false,
+                  // 'pach' : this.ref
+                }
+              }
+              let newFile = {};
+              newFile.name = UpFile[i].name;
+              let date = new Date();
+              newFile.date = date.getFullYear() + "/" + date.getMonth() + 1 + "/" + date.getDate();
+              newFile.size = UpFile[i].size;
+              newFile.sizeKb = Math.round(UpFile[i].size/1024) + "KB";
+              newFile.pach = '/DriveTest/MyDrive/allItem/MyDrive/' + vm.ref2;
+              newFile.star = false;
+              newFile.id = Date.parse(new Date()) / 1000;
+
+              let databaseRef
+
+              if (vm.addFolder == "" ) {
+                  if(vm.folderNam ==""){
+                    vm.folderName='MyDrive/'
+                    databaseRef = firebase.database().ref('/DriveTest/MyDrive/allItem/MyDrive/').child(vm.folderName)
+                  }
+                  else{
+                    console.log("??上傳變異種，folderName?")
+                    databaseRef = firebase.database().ref('/DriveTest/MyDrive/allItem/MyDrive/').child(vm.folderName) 
+                    }
+              }
+              else {
+                vm.folderName = vm.addFolder
+                databaseRef = firebase.database().ref('/DriveTest/MyDrive/allItem/MyDrive/').child(vm.addFolder)
+              }
+
+              databaseRef.once('value', function (list) {
+
+                if (Object.prototype.toString.call(list.val()) === '[object Array]') {
+                  console.log("是陣列")
+                  vm.file = list.val()
+                  Arr = vm.file
+                } else {
+                  console.log("不是陣列")
+                  vm.file = [];
+                  Arr = vm.file
+                }
+                console.log('檢查file內容：' + vm.file)
+                console.log('檢查Arr內容為：' + Arr)
+              }).then(function () {
+                let task = storageRef.put(UpFile[i])
+                task.on('state_changed', progress, error, complete)
+                if (vm.in20item.length < 20) {
+                  console.log("近期新增小於20筆")
+                  Arr.push(newFile)
+                  vm.in20item.push(newFile)
+                }
+                else {
+                  console.log("近期新增大於20筆，刪掉最後一筆")
+                  Arr.push(newFile)
+                  vm.in20item.splice(0, 1)
+                  vm.in20item.push(newFile)
+                  // Arr.length = 20
+                }
+              })
+
+              function progress(snapshot) {
+                let percentage = ((snapshot.bytesTransferred / snapshot.totalBytes).toFixed(2) * 100);
+                uploader.value = percentage;
+                uploader.setAttribute("aria-valuemin", percentage)
+                uploader.style.width = (percentage - 10) + "%";
+                // uploader.textContent = percentage+"%";
+                vm.fileMessage = "上傳提示" + (percentage - 10) + "%"
+              }
+              function error(err) {
+                console.log('ERR')
+                vm.fileMessage = '上傳提示: 錯誤'
+              }
+              function complete() {
+                storageRef.updateMetadata(newMetadata).then(function (metadata) {
+                  console.log(metadata)
+                }).catch(function (error) { vm.fileMessage = '上傳提示: 錯誤' });
+                console.log('ok')
+                databaseRef.set(Arr)
+                firebase.database().ref("/DriveTest/MyDrive/in20item/").set(vm.in20item)
+                vm.capacity = upfileSize;
+                console.log(upfileSize)
+                vm.useCapacity = 20480000 - vm.capacity;
+                vm.capacity_mb = Math.round(((vm.capacity/1024)/1000)*100 )/100 
+                 vm.useCapacity_mb = Math.round((((20480000 - vm.capacity)/1024)/1000)*100)/100 
+                let capacity = {
+                  'capacity': vm.capacity,
+                  'useCapacity': vm.useCapacity,
+                  'capacity_mb': vm.capacity_mb,
+                  'useCapacity_mb': vm.useCapacity_mb
+                }
+
+                firebase.database().ref("/DriveTest/MyDrive/capacity/").set(capacity)
+
+                // vm.printItem()
+
+                databaseRef.once('value', function (list) { vm.file = list.val() }).then(function () {
+                  uploader.style.width = 100 + "%";
+                  vm.fileMessage = '上傳提示: 上傳完成'
+              
+
+
+
+
+                })
+
+              }
+            }
+
+          }
+        },
+        add_filesCancleBtn: function () {
+          document.querySelector("#add_filesr_inAddBtn").value = "";
+          document.getElementById('progress').style.width = 0 + "%";
+        },
+        upload_folder: function (e) { //拖曳上傳
+          e.preventDefault();
+          console.log("123")
+        },
+        TOstarFile_All: function (item, key) { //加入/移除星號
+          let vm = this
+          if (this.file[key].star == false) {
+            this.file[key].star = true
+          } else { this.file[key].star = false }
+          console.log(item)
+          // let data = this.file[key]
+          let pach = this.file[key].pach;
+          let str = item.id
+          console.log(pach)
+          // console.log(item,str)
+          firebase.database().ref(pach).set(vm.file).then(() => {
+            vm.TOstar(str, item)
+          })
+        },
+
+        TOstar: function (str, item) {
+          console.log(item)
+          let vm = this
+          let in20item_key = vm.in20item.findIndex(function (item) { return item.id == str })
+
+          let inStarItem_key = vm.inStarItem.findIndex(function (item) { return item.id == str })
+          if (inStarItem_key == -1) {
+            // console.log("找不到")
+            vm.inStarItem.push(item)
+            firebase.database().ref("/DriveTest/MyDrive/inStarItem/").set(vm.inStarItem)
+          }
+          else {
+            vm.inStarItem.splice(inStarItem_key, 1)
+            firebase.database().ref("/DriveTest/MyDrive/inStarItem/").set(vm.inStarItem)
+          }
+          if (in20item_key == -1) {
+            // console.log("找不到")
+            return
+          }
+          else {
+            // console.log(in20item_key)
+            // vm.in20item[in20item_key].star = !vm.in20item[in20item_key].star
+            if (vm.in20item[in20item_key].star == false) {
+              vm.in20item[in20item_key].star = true
+            } else { vm.in20item[in20item_key].star = false }
+            firebase.database().ref("/DriveTest/MyDrive/in20item/").set(vm.in20item)
+          }
+        },
+
+        TOstar_In20: function (item, key) { //加入/移除星號
+          let data = item
+          let pach = item.pach;
+          let str = item.id
+          // console.log(item,str)
+          let br = '';
+          // console.log(pach)
+          let vm = this
+          this.folder = []
+          this.file = []
+          firebase.database().ref(pach).once('value', function (list) {
+            console.log(list)
+            if (Object.prototype.toString.call(list.val()) === '[object Array]') {
+              console.log("是陣列")
+              vm.file = list.val()
+            } else {
+              vm.file = [];
+            }
+          }).then(() => {
+            console.log('Write succeeded!');
+            let inFeil_key = vm.file.findIndex(function (item) { return item.id == str })
+
+            if (inFeil_key == -1) {
+              console.log('不是檔案')
+            }
+            else {
+              console.log('是檔案')
+              vm.file[inFeil_key].star = !vm.file[inFeil_key].star
+              firebase.database().ref(pach).set(vm.file)
+              this.TOstar(str, item)
+            }
+          });
+
+        },
+
+
+        TOstar_Star: function (item, key) { //加入/移除星號
+          let vm = this
+          vm.inStarItem[key].star = false;
+          vm.inStarItem.splice(key, 1)
+          let str = item.id;
+          firebase.database().ref("/DriveTest/MyDrive/inStarItem/").set(vm.inStarItem)
+          let inFileItem_key = vm.file.findIndex(function (item) { return item.id == str })
+          if (inFileItem_key !== -1) {
+            vm.file[inFileItem_key].star = false
+            firebase.database().ref(item.pach).set(vm.file)
+          }
+
+          let in20_key = vm.in20item.findIndex(function (item) { return item.id == str })
+          if (in20_key !== -1) {
+            vm.in20item[in20_key].star = false
+            firebase.database().ref("/DriveTest/MyDrive/in20item/").set(vm.in20item)
+          }
+        },
+      },
+      created() {
+        firebase.initializeApp(this.firebaseConfig);
+        // const storRef = firebase.storage().ref(this.ref)
+
+        this.printItem();
+      },
+      computed: {
+
+      }
+    })
+
+  </script>
+</body>
+
+</html>

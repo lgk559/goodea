@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <button onclick="storedata()">store</button>
+  <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase-database.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/6.0.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.0.2/firebase-auth.js"></script>
+
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+
+  
+
+<script>
+var firebaseConfig = {
+    apiKey: "AIzaSyAIB3NdSswYMxpUtrP7TQkJKJWun3D2gYg",
+    authDomain: "test-87ccd.firebaseapp.com",
+    databaseURL: "https://test-87ccd.firebaseio.com",
+    projectId: "test-87ccd",
+    storageBucket: "test-87ccd.appspot.com",
+    messagingSenderId: "316945080248",
+    appId: "1:316945080248:web:60e07c403d3d9ff539b94d",
+    measurementId: "G-M03LPRP98G"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  // firebase.analytics();
+
+var db = firebase.firestore();
+function storedata(){
+  db.collection("movies").doc("新世紀福爾摩斯").set({
+    name:"新世紀福爾摩斯",
+    date:"2010",
+    desctiption: "本劇改編於…"
+  })
+}
+</script>
+
+
+  
+</body>
+</html>

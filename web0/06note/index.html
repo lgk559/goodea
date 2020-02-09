@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      .textarea {
+        position: relative;
+        display: block;
+        width: 800px;
+        height: 600px;
+        border: 1px solid #000;
+        overflow: auto;
+      }
+    </style>
+    <script>
+      window.onload = function() {
+        var color_el = document.getElementById("color");
+        var fontSize_el = document.getElementById("fontSize");
+        var textarea_el = document.getElementById("textarea");
+        color_el.addEventListener("change", function(e) {
+          selectionAddStyle(textarea_el, function(font) {
+            font.style.color = e.currentTarget.value;
+          });
+        });
+        fontSize_el.addEventListener("change", function(e) {
+          selectionAddStyle(textarea_el, function(font) {
+            font.style.fontSize = e.currentTarget.value + "px";
+          });
+        });
+        textarea_el.addEventListener("click", function(e) {
+          //selectionAddStyle(textarea_el);
+        });
+        textarea_el.addEventListener("keydown", function(e) {
+          if (e.keyCode === 13) {
+            var selection = window.getSelection();
+            var range = selection.getRangeAt(0);
+            var br = document.createElement("br");
+            range.insertNode(br);
+            e.preventDefault();
+          }
+        });
+      };
+      function selectionAddStyle(textarea_el, fun) {
+        function createFont(childNode) {
+          var child = childNode; /*.cloneNode(true)*/
+          var font;
+          //console.log([child.tagName]);
+          if (child.tagName === undefined) {
+            font = document.createElement("font");
+            font.appendChild(child);
+          } else {
+            font = child;
+          }
+          return font;
+        }
+        var selection = window.getSelection();
+        if (selection.type === "Range") {
+          var range = selection.getRangeAt(0);
+          var startNode;
+          var endNode;
+          var startContainer = range.startContainer;
+          var endContainer = range.endContainer;
+          var frag = range.extractContents();
+          var myfrag = document.createDocumentFragment();
+          //console.log(range, frag);
+          var list = [];
+          for (var i = 0; i < frag.childNodes.length; i++) {
+            list.push(frag.childNodes[i]);
+          }
+          for (var i = 0; i < list.length; i++) {
+            var font = createFont(list[i]);
+            if (fun) {
+              fun(font);
+            }
+            if (i === 0) {
+              startNode = font;
+            } else if (i === list.length - 1) {
+              endNode = font;
+            }
+            myfrag.appendChild(font);
+          }
+          if (!endNode) {
+            endNode = startNode;
+          }
+          range.insertNode(myfrag);
+          //取出font堆疊
+          if (
+            startContainer.parentNode == endContainer.parentNode &&
+            startContainer.parentNode.tagName === "FONT"
+          ) {
+            var style = startContainer.parentNode.style;
+            var myfrag = document.createDocumentFragment();
+            var node01 = startContainer.parentNode;
+            var list = [];
+            for (var i = 0; i < node01.childNodes.length; i++) {
+              list.push(node01.childNodes[i]);
+            }
+            for (var i = 0; i < list.length; i++) {
+              console.log(style);
+              var font = createFont(list[i]);
+              font.style.cssText = style.cssText;
+              if (fun) {
+                fun(font);
+              }
+              myfrag.appendChild(font);
+            }
+            node01.remove();
+            range.insertNode(myfrag);
+          }
+          //刪除空白
+          if (
+            startNode.previousSibling &&
+            startNode.previousSibling.tagName === "FONT" &&
+            startNode.previousSibling.textContent === ""
+          ) {
+            startNode.previousSibling.remove();
+          }
+          if (
+            endNode.nextSibling &&
+            endNode.nextSibling.tagName === "FONT" &&
+            endNode.nextSibling.textContent === ""
+          ) {
+            endNode.nextSibling.remove();
+          }
+          selection.removeAllRanges();
+          if (startNode.firstChild) {
+            range.setStart(startNode.firstChild, 0);
+          } else {
+            range.setStart(startNode, 0);
+          }
+          if (endNode.lastChild) {
+            range.setEnd(endNode.lastChild, endNode.lastChild.length);
+          } else {
+            range.setEnd(endNode, 1);
+          }
+          selection.addRange(range);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <table>
+      <tbody>
+        <tr>
+          <td>
+            <label>
+              <span>選擇顏色：</span>
+              <input type="color" id="color" />
+            </label>
+            <label>
+              <span>選擇文字大小：</span>
+              <select id="fontSize">
+                <option value="12">12px</option>
+                <option value="14">14px</option>
+                <option value="16">16px</option>
+                <option value="18">18px</option>
+                <option value="20">20px</option>
+                <option value="22">22px</option>
+                <option value="24">24px</option>
+              </select>
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div contenteditable="true" class="textarea" id="textarea">
+              這裡是一段文字，選擇後可以設定上方的顏色跟文字大小，很陽春沒有任何<font>功能的文字</font>編輯器。<br />
+              這裡是一段文字，選擇後可以設定上方的顏色跟文字大小，很陽春沒有任何功能的文字編輯器。
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

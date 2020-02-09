@@ -1,0 +1,118 @@
+.tab-content {
+  height: 68vh;
+}
+
+.nav {
+  height: auto;
+}
+
+.mt--1 {
+  margin-top: -5px;
+}
+
+.mt--2 {
+  margin-top: -10px;
+}
+
+.colorSelect {
+  padding: 10px;
+  width: 180px;
+}
+
+.colorSelect .colorItem {
+  padding: 5px;
+  width: auto;
+}
+
+.colorSelect .colorItem .colorItem0 {
+  width: 20px;
+  height: 20px;
+  border: 1px soild #ccc;
+}
+
+.colorSelect .colorItem #colorItem1 {
+  background-color: #000;
+}
+
+.colorSelect .colorItem #colorItem2 {
+  background-color: #666;
+}
+
+.colorSelect .colorItem #colorItem3 {
+  background-color: #663300;
+}
+
+.colorSelect .colorItem #colorItem4 {
+  background-color: #009933;
+}
+
+.colorSelect .colorItem #colorItem5 {
+  background-color: #77ff33;
+}
+
+.colorSelect .colorItem #colorItem6 {
+  background-color: #cc0000;
+}
+
+.colorSelect .colorItem #colorItem7 {
+  background-color: #e60000;
+}
+
+.colorSelect .colorItem #colorItem8 {
+  background-color: #ff9900;
+}
+
+.colorSelect .colorItem #colorItem9 {
+  background-color: #ffff00;
+}
+
+.colorSelect .colorItem #colorItem10 {
+  background-color: #990073;
+}
+
+.colorSelect .colorItem #colorItem11 {
+  background-color: #000099;
+}
+
+.colorSelect .colorItem #colorItem12 {
+  background-color: #2e2eb8;
+}
+
+.colorSelect .colorItem #colorItem13 {
+  background-color: #0055ff;
+}
+
+.colorSelect .colorItem #colorItem14 {
+  background-color: #00ccff;
+}
+
+.colorSelect .colorItem #colorItem15 {
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+.nodePage {
+  max-height: 78vh;
+  overflow: auto;
+  text-align: top;
+}
+
+.book {
+  padding-top: 10px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.book .bookInner {
+  width: 150px;
+  height: 110px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.writeBox {
+  height: 68vh;
+  background-color: #fff;
+}
+/*# sourceMappingURL=note.css.map */

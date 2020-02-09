@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  
+
+
+
+
+
+<!-- 引入 firebase 函式庫 -->
+<script src="https://www.gstatic.com/firebasejs/7.6.1/firebase.js"></script>
+<!-- 引入 firestore 函式庫 -->
+<script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.6.1/firebase-analytics.js"></script>
+  <!-- Add Firebase products that you want to use -->
+  <script defer src="https://www.gstatic.com/firebasejs/7.6.1/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/7.6.1/firebase-firestore.js"></script>
+  <!-- <script defer src="./init-firebase.js"></script> -->
+
+<button onclick="storedata()"> store</button>
+<button onclick="getdata()"> get</button>
+
+
+<script>
+//初始化 firebase
+var firebaseConfig  = {
+  apiKey: "AIzaSyAIB3NdSswYMxpUtrP7TQkJKJWun3D2gYg",
+    authDomain: "test-87ccd.firebaseapp.com",
+    databaseURL: "https://test-87ccd.firebaseio.com",
+    projectId: "test-87ccd",
+    storageBucket: "test-87ccd.appspot.com",
+    messagingSenderId: "316945080248",
+    appId: "1:316945080248:web:60e07c403d3d9ff539b94d",
+    measurementId: "G-M03LPRP98G"
+  };
+
+
+  // Initialize Firebase
+
+  
+  var defaultProject = firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+  var defaultStorage = defaultProject.storage();
+  var defaultFirestore = defaultProject.firestore();
+  defaultStorage = firebase.storage();
+  defaultFirestore = firebase.firestore();
+
+</script>
+  <script>
+// Initialize Firebase with a default Firebase project
+firebase.initializeApp(firebaseConfig);
+
+// Initialize Firebase with a second Firebase project
+var otherProject = firebase.initializeApp(otherProjectFirebaseConfig, "other");
+
+console.log(firebase.app().name);  // "[DEFAULT]"
+console.log(otherProject.name);    // "otherProject"
+
+// Use the shorthand notation to access the default project's Firebase services
+var defaultStorage = firebase.storage();
+var defaultFirestore = firebase.firestore();
+
+// Use the otherProject variable to access the second project's Firebase services
+var otherStorage = otherProject.storage();
+var otherFirestore = otherProject.firestore();
+
+var message = 'This is my message.';
+ref.putString(message).then(function(snapshot) {
+console.log('Uploaded a raw string!');
+});
+</script>
+
+</body>
+</html>

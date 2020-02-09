@@ -1,0 +1,31 @@
+{
+  "apiIp":"http://192.168.1.1:8080",
+  "apis":[
+          {
+              "apiName":"login",
+              "apiAddress":"/user/login?",
+              "apiType":"POST",
+              "apiParams":[
+                              {
+                                  "param1":"username",
+                                  "paramType":"string"
+                              },
+                              {
+                                  "param2":"password",
+                                  "paramType":"string"
+                              },
+                              {
+                                  "param3":"mobileLogin",
+                                  "paramType":"boolean"
+                              }
+                          ]
+          },
+          {
+              "apiName":"logout",
+              "apiAddress":"/user/logout",
+              "apiType":"GET",
+              "apiParams":[]
+          }
+  
+      ]
+}
