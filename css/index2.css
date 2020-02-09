@@ -1,0 +1,17 @@
+.webItem {
+  height: 200px;
+  border: 1px solid #ccc;
+}
+
+.webItem1 {
+  background-image: url("../img/index/web1_1.jpg");
+}
+
+.webItem2 {
+  background-image: url("../img/index/web2_1.jpg");
+}
+
+.webItem3 {
+  background-image: url("../img/index/web3_1.jpg");
+}
+/*# sourceMappingURL=index2.css.map */

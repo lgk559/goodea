@@ -1,0 +1,189 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", "Roboto", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  text-align: justify;
+}
+/*# sourceMappingURL=oz-Reboot.css.map */
+
+/* 邊框 */
+.border-2{
+  border: 2px solid;
+  box-sizing: border-box;
+  border-radius: 10px
+}
+.border-3{
+  border: 3px solid;
+  box-sizing: border-box;
+  border-radius: 10px
+}
+.border-4{
+  border: 3px solid;
+  box-sizing: border-box;
+  border-radius: 10px
+}
+  
+/* 引用的自訂樣示 */
+blockquote {
+			margin: 1em 3em;
+			color: #999;
+			border-left: 2px solid #999;
+      padding-left: 1em; }
+  /* blockquote {
+    margin: 1em 20px;
+    padding-left: 50px;
+    background: transparent url(圖片網址) no-repeat; 
+  }
+
+  /* 圖片、影音...相關的自訂樣示 */
+  .bg-lt{
+    background-position: left top;
+  }
+  .bg-lc{
+      background-position: left center;
+  }
+  .bg-lb{
+      background-position: left bottom;
+  }
+  .bg-cc{
+      background-position: center center;
+  }
+  .bg-rt{
+      background-position: right top;
+  }
+  .bg-rc{
+      background-position: right center;
+  }
+  .bg-rb{
+      background-position: right bottom;
+  }
+  /* 消除預設的margin */
+  figure{
+    margin: 0px;
+    /* padding: 0 15px; */
+  }
+  /* 當圖片想要滿版但高度又要自訂時，可改為背景，以免失真 */
+  .bg-cover{
+    background-position: center center;
+    background-size: cover;
+  }
+
+  /* 背景半透明。當在背景色彩豐富的照片上，說明文字背景可套用此樣式。 */
+  .bg-halfColor{
+    background-color: rgba(109, 108, 108, 0.6);
+    position: absolute;
+    bottom: 0;
+    left: 0px;
+    right: 0px;
+  }
+  .bg-halfColor:hover{
+    background-color: rgba(109, 108, 108, 0.8);
+  }
+  .h-100vh{
+    height: 100vh;
+  }
+  .bg-border,.bg-border-1,.bg-border-2,.bg-border-3,.bg-border-4,.bg-border-5,.bg-border-6,.bg-border-7,.bg-border-8,.bg-border-9,.bg-border-10,.bg-border-11,.bg-border-12{
+    flex-basis: auto;
+    border: 1px solid #dee2e6;
+    margin: 0px 15px;
+    padding: 15px 15px;            
+  }
+  .bg-border-1{
+    width: calc(8.333333% - 30px);
+  }
+  .bg-border-2{
+    width: calc(16.666667% - 30px);
+  }
+  .bg-border-3{
+    width: calc(25% - 30px);
+  }
+  .bg-border-4{
+    width: calc(33.333333% - 30px);
+  }
+  .bg-border-5{
+    width: calc(41.666667% - 30px);
+  }
+  .bg-border-6{
+    width: calc(50% - 30px);
+  }
+  .bg-border-7{
+    width: calc(58.333333% - 30px);
+  }
+  .bg-border-8{
+    width: calc(66.666667% - 30px);
+  }
+  .bg-border-9{
+    width: calc(75% - 30px);
+  }
+  .bg-border-10{
+    width: calc(83.333333% - 30px);
+  }
+  .bg-border-11{
+    width: calc(91.666667% - 30px);
+  }
+  .bg-border-11{
+    width: calc(100% - 30px);
+  }
+  /* figure > .col-4{
+    padding-left: 0px;
+    padding-right: 0px;
+  } */
+  figcaption{
+      padding-top: 5px;
+  }
+  .figure-caption::before {
+    content: "\2014 \00A0";
+  }
+  @media (min-width: 768px){
+    .md-h4{
+      font-size: 1.5rem;
+    }
+    .md-h5{
+      font-size: 1.25rem;
+    }
+    /* 隱藏．失效 */
+  .md-disabled{
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  }
+
+
+
+/* <!DOCTYPE html>
+<html lang="zh-hang-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="../css/fj-css/fj-Reboot.css" class="css">
+  <style></style>
+</head>
+<body>
+<div class="container">
+
+        
+</div>
+<script src="https://kit.fontawesome.com/957bf74550.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+    
+</body>
+
+</html> */
+
+/* @media (min-width: 768px) 
+    
+@media (min-width: 992px)   
+
+@media (min-width: 1200px)  */

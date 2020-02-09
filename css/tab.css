@@ -1,0 +1,13 @@
+.web-tab {
+  position: relative;
+  width: 80vw;
+  z-index: 1;
+  background: #FFF;
+}
+
+@media (min-width: 768px) {
+  .web-tab {
+    width: 100%;
+  }
+}
+/*# sourceMappingURL=tab.css.map */
